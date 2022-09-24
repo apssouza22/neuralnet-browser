@@ -36,7 +36,8 @@ export class MyModel {
         let {images, labels} = fromFloatArrayToArray(xs, ys);
 
         return new Promise(function (resolve, reject) {
-            for (let i = 0; i < args.epochs; i++) {
+            let i = 0;
+            // for (let i = 0; i < args.epochs; i++) {
                 for (const imgIndex in images) {
                     model.fit(images[imgIndex], labels[imgIndex])
                     if (args.batchSize > 0 && imgIndex % args.batchSize === 0) {
@@ -44,7 +45,7 @@ export class MyModel {
                     }
                 }
                 args.callbacks.onEpochEnd(i, {val_acc: 1, loss: 0})
-            }
+            // }
             resolve();
         });
     }

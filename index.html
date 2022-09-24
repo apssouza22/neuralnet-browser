@@ -18,7 +18,7 @@ limitations under the License.
 <html>
 
 <head>
-  <title>MNIST in TensorFlow.js Layers API</title>
+  <title>MNIST in Vanilla ANN</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="tfjs-examples.css" />
@@ -67,17 +67,19 @@ limitations under the License.
 <body>
   <div class="tfjs-example-container">
     <section class='title-area'>
-      <h1>TensorFlow.js: Digit Recognizer with Layers</h1>
-      <p class='subtitle'>Train a model to recognize handwritten digits from the MNIST database using the tf.layers
-        api.
+      <h1>Digit Recognizer with Vanilla Artificial Neural Network</h1>
+      <p class='subtitle'>Train a model to recognize handwritten digits from the MNIST database using a vanilla artificial neural network
+        and compare with TensorFlow</p>
       </p>
     </section>
 
     <section>
       <p class='section-head'>Description</p>
       <p>
-        This examples lets you train a handwritten digit recognizer using either a Convolutional Neural Network
-        (also known as a ConvNet or CNN) or a Fully Connected Neural Network (also known as a DenseNet).
+        This examples lets you train a handwritten digit recognizer using three different approaches:
+        - Vanilla Artificial Neural Network
+        - Fully Connected Neural Network (also known as a DenseNet) Using TensorFlow.js
+        - Convolutional Neural Network(also known as a ConvNet or CNN) Using TensorFlow.js
       </p>
       <p>The MNIST dataset is used as training data.</p>
     </section>
@@ -88,8 +90,8 @@ limitations under the License.
         <label>Model Type:</label>
         <select id="model-type">
           <option>MyNet</option>
-          <option>ConvNet</option>
           <option>DenseNet</option>
+          <option>ConvNet</option>
         </select>
       </div>
 
