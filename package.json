@@ -1,6 +1,6 @@
 {
-  "name": "tfjs-examples-mnist",
-  "version": "0.1.0",
+  "name": "mnist-vanilla-neuralnet",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "license": "Apache-2.0",
