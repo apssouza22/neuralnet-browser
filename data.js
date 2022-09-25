@@ -15,8 +15,6 @@
  * =============================================================================
  */
 
-import * as tf from '@tensorflow/tfjs';
-
 export const IMAGE_H = 28;
 export const IMAGE_W = 28;
 const IMAGE_SIZE = IMAGE_H * IMAGE_W;
@@ -30,13 +28,10 @@ const MNIST_IMAGES_SPRITE_PATH =  'https://storage.googleapis.com/learnjs-data/m
 const MNIST_LABELS_PATH = 'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
 
 /**
- * A class that fetches the sprited MNIST dataset and provide data as
- * tf.Tensors.
+ * A class that fetches the sprited MNIST dataset and provide data as flatten pixel values
  */
 export class MnistData {
     constructor() {
-        this.shuffledTrainIndex = 0;
-        this.shuffledTestIndex = 0;
     }
 
     async load() {

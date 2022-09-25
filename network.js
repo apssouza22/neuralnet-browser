@@ -27,41 +27,6 @@ class NeuralNetwork {
     }
 
     /**
-     * Load the pre trained weights from a JSON object
-     * @param {NeuralNetwork} dict
-     * @returns {NeuralNetwork}
-     */
-    loadWeights(dict) {
-        for (const i in this.layers) {
-            this.layers[i].loadWeights(dict.layers[i])
-        }
-    }
-
-    /**
-     * Return the trained weights in a JSON object
-     * @returns {Object}
-     */
-    getWeights() {
-        const layers = []
-        for (const layersKey in this.layers) {
-            layers.push(this.layers[layersKey].getWeights())
-        }
-        return {
-            layerNodesCounts: this.layerNodesCounts,
-            layers: layers,
-        }
-    }
-
-    /**
-     * Save the model weights to local storage
-     * @param {String} key - the local storage key to save the model weights to
-     */
-    save(key = "brain") {
-        console.log("Saving brain to local storage");
-        localStorage.setItem(key, JSON.stringify(this.getWeights()));
-    }
-
-    /**
      * Perform the feed foward operation
      * @param {Array} input_array - Array of input values
      * @param {Boolean} GET_ALL_LAYERS - if we need all layers after feed forward instead of just output layer
@@ -119,6 +84,12 @@ export class TrainableNeuralNetwork extends NeuralNetwork {
         this.updateWeights();
     }
 
+    /**
+     * Evaluate the model with the given test data
+     * @param {int[]} inputs
+     * @param {int[]} targets
+     * @returns {number} average accuracy
+     */
     evaluate(inputs, targets) {
         let total = 0
         for (let i = 0; i < inputs.length; i++) {
@@ -152,6 +123,9 @@ export class TrainableNeuralNetwork extends NeuralNetwork {
         return this.layers[this.layers.length - 1].layerError;
     }
 
+    /**
+     * Neural network summary
+     */
     summary() {
         console.log("Neural Network Summary");
         console.log("Layers : ", this.layerNodesCounts);

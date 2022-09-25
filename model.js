@@ -1,8 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
 import {IMAGE_H, IMAGE_W} from "./data";
 import {Activation, argMax, Layer, TrainableNeuralNetwork} from "./network";
+
 const IMAGE_SIZE = IMAGE_H * IMAGE_W;
 const NUM_CLASSES = 10;
+
 export class MyModel {
     /**
      * @param {tf.Sequential| TrainableNeuralNetwork} tfModel
@@ -32,21 +34,40 @@ export class MyModel {
             const labels = tf.tensor2d(ys, [ys.length / NUM_CLASSES, NUM_CLASSES]);
             return this.model.fit(inputs, labels, args)
         }
-        const model = this.model
-        let {images, labels} = fromFloatArrayToArray(xs, ys);
 
+        let {images, labels} = convertFromFlattenArray(xs, ys);
+        console.log('Training data size: ', images.length)
+        console.log("Batch size:", args.batchSize)
+        console.log("Epochs:", args.epochs)
+        console.log("Validation split:", args.validationSplit)
+        let i = 0;
+        let epoch = 0;
+        let batch = 0;
+        const model = this.model;
         return new Promise(function (resolve, reject) {
-            let i = 0;
-            // for (let i = 0; i < args.epochs; i++) {
-                for (const imgIndex in images) {
-                    model.fit(images[imgIndex], labels[imgIndex])
-                    if (args.batchSize > 0 && imgIndex % args.batchSize === 0) {
-                        args.callbacks.onBatchEnd(imgIndex, {})
-                    }
+            let step = () => {
+                batch++;
+                if (i >= images.length) {
+                    i = 0;
+                    epoch++;
+                    args.callbacks.onEpochEnd(epoch, {val_acc: 1, loss: 0})
                 }
-                args.callbacks.onEpochEnd(i, {val_acc: 1, loss: 0})
-            // }
-            resolve();
+                if (epoch + 1  >= args.epochs) {
+                    resolve();
+                    return;
+                }
+                for (let j = 0; j < args.batchSize; j++) {
+                    if (i >= images.length) {
+                        console.log("End of epoch " + i)
+                        break;
+                    }
+                    model.fit(images[i], labels[i])
+                    i++;
+                }
+                args.callbacks.onBatchEnd(i, {})
+                requestAnimationFrame(step)
+            };
+            requestAnimationFrame(step)
         });
     }
 
@@ -57,7 +78,7 @@ export class MyModel {
             let testResult = this.model.evaluate(inputs, labels)
             return testResult[1].dataSync()[0] * 100
         }
-        let {images, labels} = fromFloatArrayToArray(xs, ys);
+        let {images, labels} = convertFromFlattenArray(xs, ys);
         return this.model.evaluate(images, labels) * 100
     }
 
@@ -80,7 +101,7 @@ export class MyModel {
             // (for a non-blocking version of this function, use data()).
             return Array.from(output.argMax(1).dataSync())
         }
-        let {images} = fromFloatArrayToArray(xs, null);
+        let {images} = convertFromFlattenArray(xs, null);
         let predictions = []
         for (const image of images) {
             let output = this.model.predict(image);
@@ -148,7 +169,10 @@ function createModel(modelType) {
     throw new Error(`Invalid model type: ${modelType}`);
 }
 
-
+/**
+ * Create a vanilla neural network model (My own NN)
+ * @returns {TrainableNeuralNetwork}
+ */
 function createMyModel() {
     let input = IMAGE_H * IMAGE_W;
     /**
@@ -254,7 +278,14 @@ function createDenseModel() {
     return model;
 }
 
-export function fromFloatArrayToArray(xs, ys) {
+/**
+ * The MNIST data is stored as a single array of pixel values.
+ * This function reshapes these into a 784 pixel values (28 * 28)
+ * @param xs inputs
+ * @param ys labels
+ * @returns {{images: *[], labels: *[]}}
+ */
+export function convertFromFlattenArray(xs, ys) {
     const batchSize = xs.length / IMAGE_SIZE;
     let images = [];
     let labels = [];

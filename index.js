@@ -21,11 +21,7 @@ import * as nn from './model';
 // This is a helper class for loading and managing MNIST data specifically.
 // It is a useful example of how you could create your own data manager class
 // for arbitrary data though. It's worth a look :)
-import {IMAGE_H, IMAGE_W, MnistData} from './data';
-
-// This is a helper class for drawing loss graphs and MNIST images to the
-// window. For the purposes of understanding the machine learning bits, you can
-// largely ignore it
+import {MnistData} from './data';
 import * as ui from './ui';
 import {argMax} from "./network";
 
@@ -92,7 +88,7 @@ async function train(model, onIteration) {
     if (onIteration) {
       onIteration('onEpochEnd', epoch, logs);
     }
-    await tf.nextFrame();
+      await tf.nextFrame();
   }
 
   async function onBatchEnd(batch, logs)  {
@@ -129,16 +125,15 @@ async function showPredictions(model) {
   // The tf.tidy callback runs synchronously.
   tf.tidy(() => {
     const predictions = model.predict(examples.xs);
-
-
-
-    let converted = nn.fromFloatArrayToArray(examples.xs, examples.labels);
-    const labels = convertHotEncoding(converted.labels);
+    let converted = nn.convertFromFlattenArray(examples.xs, examples.labels);
+    const labels = convertFromHotEncoding(converted.labels);
     ui.showTestResults(converted.images, predictions, labels);
   });
 }
 
-function convertHotEncoding(labels) {
+// converting from hot encoding to number
+// [0, 0, 0, 1, 0, 0, 0, 0, 0, 0] -> 3
+function convertFromHotEncoding(labels) {
   let convLabels = [];
   for (const label of labels) {
     convLabels.push(argMax(label));
@@ -165,5 +160,4 @@ ui.setTrainButtonCallback(async () => {
 
   ui.logStatus('Starting model training...');
   await train(model, () => showPredictions(model));
-  // await showPredictions(model)
 });
