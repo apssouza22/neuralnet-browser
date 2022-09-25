@@ -205,10 +205,9 @@ export class Activation {
         }
     }
 
-    // Activation functions
     static #softmax_derivative(y) {
         return y * (1 - y);
-    };
+    }
 
     static #softmax(x) {
         return 1 / (1 + Math.exp(-x));
@@ -247,6 +246,13 @@ export class Layer {
     static OUTPUT = 3
     layerError
 
+    /**
+     * Constructor
+     * @param {int} inputSize
+     * @param {int}outputSize
+     * @param {number} activation
+     * @param {number} layerType
+     */
     constructor(inputSize, outputSize, activation, layerType) {
         this.layerType = layerType;
         let weights = new Matrix(outputSize, inputSize);
@@ -260,24 +266,6 @@ export class Layer {
         this.biases = bias;
         this.inputs = new Array(inputSize);
         this.outputs = new Array(outputSize);
-
-    }
-
-    loadWeights(trainedLayer) {
-        this.weights.data = trainedLayer.weights
-        this.biases.data = trainedLayer.biases;
-        this.outputs.data = trainedLayer.outputs;
-        this.inputs = trainedLayer.inputs;
-    }
-
-    getWeights() {
-        return {
-            weights: this.weights.data,
-            biases: this.biases.data,
-            outputs: this.outputs.data,
-            inputs: this.inputs,
-            layerType: this.layerType,
-        }
     }
 
     /**
@@ -309,6 +297,9 @@ export class Layer {
         return this.layerError;
     }
 
+    /**
+     * Update the weights of the layer
+     */
     updateWeights(nextLayerOutput) {
         //Calculating delta weights
         const nextLayerOutputTransposed = Matrix.transpose(nextLayerOutput);
@@ -320,6 +311,10 @@ export class Layer {
     }
 
 
+    /**
+     * Calculate the gradient of the layer
+     * @param {float}learningRate
+     */
     calculateGradient(learningRate) {
         this.gradient = Matrix.map(this.outputs, this.activationFun.derivative);
         this.gradient.multiply(this.layerError);
