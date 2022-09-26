@@ -255,15 +255,9 @@ export class Layer {
      */
     constructor(inputSize, outputSize, activation, layerType) {
         this.layerType = layerType;
-        let weights = new Matrix(outputSize, inputSize);
-        weights.randomize()
-
-        let bias = new Matrix(outputSize, 1);
-        bias.randomize()
-
         this.activationFun = Activation.create(activation);
-        this.weights = weights;
-        this.biases = bias;
+        this.weights = Matrix.randomize(outputSize, inputSize);
+        this.biases = Matrix.randomize(outputSize, 1);
         this.inputs = new Array(inputSize);
         this.outputs = new Array(outputSize);
     }
