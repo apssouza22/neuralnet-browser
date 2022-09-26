@@ -87,6 +87,7 @@ limitations under the License.
     </section>
 
     <section>
+        <div style="float: left">
         <p class='section-head'>Training Parameters</p>
         <div>
             <label>Model Type:</label>
@@ -103,6 +104,10 @@ limitations under the License.
         </div>
 
         <button id="train">Load Data and Train Model</button>
+        </div>
+        <div  style="float: right">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
     </section>
 
     <section>
@@ -129,6 +134,7 @@ limitations under the License.
 
 
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script type="module" src="index.js"></script>
 </body>
 

@@ -81,8 +81,9 @@ export class TrainableNeuralNetwork extends NeuralNetwork {
     fit(input, target) {
         this.#trainArgsValidator(input, target)
         this.feedForward(input, true);
-        this.calculateLoss(target);
+        let loss = this.calculateLoss(target);
         this.updateWeights();
+        return loss;
     }
 
     /**
@@ -101,7 +102,7 @@ export class TrainableNeuralNetwork extends NeuralNetwork {
     }
 
     /**
-     * Trains with back propagation
+     * Perform the prediction
      * @param {int[]} input - Array of input values
      **/
     predict(input) {

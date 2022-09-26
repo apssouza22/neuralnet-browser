@@ -23,6 +23,8 @@ import {MnistData} from './data';
 import * as ui from './ui';
 import {argMax} from "./network";
 
+let chart = getChart();
+
 /**
  * Compile and train the given model.
  *
@@ -89,8 +91,13 @@ async function train(model, onIteration) {
     if (onIteration && batch % 10 === 0) {
       onIteration('onBatchEnd', batch, logs);
     }
+    chartUpdate(logs.loss, trainBatchCount);
+
+    //Calling tf.nextFrame() in a browser context will release the UI thread so the page can be responsive.
+    // Returns a promise that resolve when a requestAnimationFrame has completed
     await tf.nextFrame();
   }
+
 
   const testAccPercent = model.evaluate(testData.xs, testData.labels);
   ui.logStatus(
@@ -148,3 +155,42 @@ ui.setTrainButtonCallback(async () => {
   ui.logStatus('Starting model training...');
   await train(model, () => showPredictions(model));
 });
+
+
+function getChart() {
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'line',
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Batch Loss',
+        data: [],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+        ],
+      }],
+    },
+  });
+  return myChart
+}
+
+
+function chartUpdate(loss, batch) {
+  chart.data.labels.push(batch);
+  chart.data.datasets.forEach((dataset) => {
+    dataset.data.push(loss);
+  });
+  chart.update();
+}

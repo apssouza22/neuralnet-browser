@@ -5,6 +5,12 @@ import {Activation, argMax, Layer, TrainableNeuralNetwork} from "./network";
 const IMAGE_SIZE = IMAGE_H * IMAGE_W;
 const NUM_CLASSES = 10;
 
+function getAvg(losses) {
+    return losses
+            .map((loss) => Math.abs(loss.data[0][0]))
+            .reduce((a, b) => a + b) / losses.length;
+}
+
 export class MyModel {
     /**
      * @param {tf.Sequential| TrainableNeuralNetwork} tfModel
@@ -56,21 +62,28 @@ export class MyModel {
                     resolve();
                     return;
                 }
+                let losses = [];
                 for (let j = 0; j < args.batchSize; j++) {
                     if (i >= images.length) {
                         console.log("End of epoch " + i)
                         break;
                     }
-                    model.fit(images[i], labels[i])
+                    losses.push(model.fit(images[i], labels[i]))
                     i++;
                 }
-                args.callbacks.onBatchEnd(i, {})
+                args.callbacks.onBatchEnd(i, {loss: getAvg(losses) * 100, val_acc: 1})
                 requestAnimationFrame(step)
             };
             requestAnimationFrame(step)
         });
     }
 
+    /**
+     * Evaluate the model with the given test data
+     * @param {int[]} inputs
+     * @param {int[]} targets
+     * @returns {number} average accuracy
+     */
     evaluate(xs, ys) {
         if (this.model instanceof tf.Sequential) {
             let inputs = tf.tensor4d(xs, [xs.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
@@ -82,6 +95,10 @@ export class MyModel {
         return this.model.evaluate(images, labels) * 100
     }
 
+    /**
+     * Perform the prediction
+     * @param {int[]} input - Array of input values
+     **/
     predict(xs) {
         if (this.model instanceof tf.Sequential) {
             let inputs = tf.tensor4d(xs, [xs.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
