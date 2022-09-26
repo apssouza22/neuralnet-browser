@@ -18,23 +18,10 @@
 import * as tf from '@tensorflow/tfjs';
 import * as nn from './model';
 
-// This is a helper class for loading and managing MNIST data specifically.
-// It is a useful example of how you could create your own data manager class
-// for arbitrary data though. It's worth a look :)
+
 import {MnistData} from './data';
 import * as ui from './ui';
 import {argMax} from "./network";
-
-
-/**
- * This callback type is used by the `train` function for insertion into
- * the model.fit callback loop.
- *
- * @callback onIterationCallback
- * @param {string} eventType Selector for which type of event to fire on.
- * @param {number} batchOrEpochNumber The current epoch / batch number
- * @param {tf.Logs} logs Logs to append to
- */
 
 /**
  * Compile and train the given model.

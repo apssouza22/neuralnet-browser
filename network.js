@@ -1,3 +1,4 @@
+// This file contain our vanilla javascript code for the neural network
 import {Matrix} from './matrix';
 
 /**
@@ -27,10 +28,10 @@ class NeuralNetwork {
     }
 
     /**
-     * Perform the feed foward operation
-     * @param {Array} input_array - Array of input values
+     * Perform the feed forward operation
+     * @param {number[]} input_array - Array of input values
      * @param {Boolean} GET_ALL_LAYERS - if we need all layers after feed forward instead of just output layer
-     * @returns {Array} - the Neural net output for each layer
+     * @returns {number[]} - the Neural net output for each layer
      */
     feedForward(input_array, GET_ALL_LAYERS = false) {
         this.#feedforwardArgsValidator(input_array)
@@ -264,7 +265,7 @@ export class Layer {
 
     /**
      * Feed forward the input matrix to the layer
-     * @param {Array} input_array - Array of input values
+     * @param {number[]} input_array - Array of input values
      * @param {Boolean} GET_ALL_LAYERS - if we need all layers after feed forward instead of just output layer
      */
     feedForward(input) {

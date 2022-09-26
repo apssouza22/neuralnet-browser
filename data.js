@@ -15,6 +15,9 @@
  * =============================================================================
  */
 
+// This is a helper class for loading and managing MNIST data specifically.
+// It is a useful example of how you could create your own data manager class
+// for arbitrary data though. It's worth a look :)
 export const IMAGE_H = 28;
 export const IMAGE_W = 28;
 const IMAGE_SIZE = IMAGE_H * IMAGE_W;
@@ -22,7 +25,6 @@ const NUM_CLASSES = 10;
 const NUM_DATASET_ELEMENTS = 65000;
 
 const NUM_TRAIN_ELEMENTS = 55000;
-const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
 
 const MNIST_IMAGES_SPRITE_PATH =  'https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png';
 const MNIST_LABELS_PATH = 'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
@@ -34,6 +36,10 @@ export class MnistData {
     constructor() {
     }
 
+    /**
+     * Load the dataset and parse it into training and test sets.
+     * @return {Promise<void>}
+     */
     async load() {
         // Make a request for the MNIST sprited image.
         const img = new Image();
@@ -86,24 +92,26 @@ export class MnistData {
     }
 
     /**
-     * Get all training data as a data tensor and a labels tensor.
+     * Get all training data and the labels as a flatten array.
      *
-     * @returns
-     *   xs: The data tensor, of shape `[numTrainExamples, 28, 28, 1]`.
-     *   labels: The one-hot encoded labels tensor, of shape `[numTrainExamples, 10]`.
+     * @returns {{
+     *     xs: Float32Array,
+     *     labels: Uint8Array,
+     * }}
+     *
      */
     getTrainData() {
         return {xs:this.trainImages, labels:this.trainLabels};
     }
 
     /**
-     * Get all test data as a data tensor and a labels tensor.
+     * Get all test data and the labels as a flatten array.
      *
-     * @param {number | null} numExamples Optional number of examples to get. If not provided,
-     *  all test examples will be returned.
-     * @returns
-     *   xs: The data tensor, of shape `[numTestExamples, 28, 28, 1]`.
-     *   labels: The one-hot encoded labels tensor, of shape `[numTestExamples, 10]`.
+     * @returns {{
+     *     xs: Float32Array,
+     *     labels: Uint8Array,
+     * }}
+     *
      */
     getTestData(numExamples) {
         if (numExamples != null) {
