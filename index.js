@@ -28,7 +28,7 @@ let chart = getChart();
 /**
  * Compile and train the given model.
  *
- * @param {nn.MyModel} model The model to train.
+ * @param {nn.ModelWrapper} model The model to train.
  * @param {onIterationCallback} onIteration A callback to execute every 10
  *     batches & epoch end.
  */
@@ -61,7 +61,7 @@ async function train(model, onIteration) {
   // callbacks, so that we can plot the loss and accuracy values in the page
   // as the training progresses.
   let valAcc = 1;
-  await model.fit(trainData.xs, trainData.labels, {
+  await model.train(trainData.xs, trainData.labels, {
     batchSize,
     validationSplit,
     epochs: trainEpochs,
@@ -108,7 +108,7 @@ async function train(model, onIteration) {
 /**
  * Show predictions on a number of test examples.
  *
- * @param {nn.MyModel} model The model to be used for making the predictions.
+ * @param {nn.ModelWrapper} model The model to be used for making the predictions.
  */
 async function showPredictions(model) {
   const testExamples = 100;

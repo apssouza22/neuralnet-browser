@@ -1,6 +1,8 @@
 # Training MNIST on the Browser
 
-This project shows how to train a neural network on the browser using Vanilla Neural Network(No library) and TensorFlowJs. 
+This project shows how to train a neural network on the browser using Vanilla Neural Network(No library) 
+then we compare its performance with a neural network trained using Tensorflow.js.
+
 The model is trained on the MNIST dataset, which contains images of handwritten digits. 
 
 This project lets you train a handwritten digit recognizer using three different model approaches:

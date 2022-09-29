@@ -67,25 +67,33 @@ export class Matrix {
             return matrix1;
         }
 
-        //matrix multiplication - cols * rows
-        if (matrix1.cols == matrix2.rows) {
-            let nrows = matrix1.rows; //new rows
-            let ncols = matrix2.cols; //new cols
-            let newmat = new Matrix(matrix1.rows, matrix2.cols);
-            for (let i = 0; i < nrows; i++) {
-                for (let j = 0; j < ncols; j++) {
-                    newmat.data[i][j] = 0;
-                    for (let k = 0; k < matrix1.cols; k++) {
-                        newmat.data[i][j] += matrix1.data[i][k] * matrix2.data[k][j];
-                    }
-                }
-            }
-            return newmat;
-        }
-
-        throw new Error('multiplication failed because of size mismatch!');
+        return this.calcMatrixProduct(matrix1, matrix2);
     }
 
+    /**
+     ** Matrix multiplication - cols * rows
+     ** For matrix multiplication, the number of columns in the first matrix must be equal to the number of rows in the second matrix.
+     ** The resulting matrix, known as the matrix product, has the number of rows of the first and the number of columns of the second matrix
+     * @param {Matrix} matrix1
+     * @param {Matrix} matrix2
+     * @returns {Matrix}
+     **/
+    static calcMatrixProduct(matrix1, matrix2) {
+        if (matrix1.cols != matrix2.rows) {
+            throw new Error('multiplication failed because of size mismatch!');
+        }
+
+        let newMatrix = new Matrix(matrix1.rows, matrix2.cols);
+        for (let i = 0; i < newMatrix.rows; i++) {
+            for (let j = 0; j < newMatrix.cols; j++) {
+                newMatrix.data[i][j] = 0;
+                for (let k = 0; k < matrix1.cols; k++) {
+                    newMatrix.data[i][j] += matrix1.data[i][k] * matrix2.data[k][j];
+                }
+            }
+        }
+        return newMatrix;
+    }
 
     /**
      * Creates a copy of a matrix

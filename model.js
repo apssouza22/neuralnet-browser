@@ -11,7 +11,7 @@ function getAvg(losses) {
             .reduce((a, b) => a + b) / losses.length;
 }
 
-export class MyModel {
+export class ModelWrapper {
     /**
      * @param {tf.Sequential| TrainableNeuralNetwork} tfModel
      */
@@ -34,13 +34,17 @@ export class MyModel {
      * }}args
      * @returns {Promise<unknown>}
      */
-    async fit(xs, ys, args) {
+    async train(xs, ys, args) {
         if (this.model instanceof tf.Sequential) {
             const inputs = tf.tensor4d(xs, [xs.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1]);
             const labels = tf.tensor2d(ys, [ys.length / NUM_CLASSES, NUM_CLASSES]);
             return this.model.fit(inputs, labels, args)
         }
 
+        return this.#handleMyNNTraining(xs, ys, args);
+    }
+
+    #handleMyNNTraining(xs, ys, args) {
         let {images, labels} = convertFromFlattenArray(xs, ys);
         console.log('Training data size: ', images.length)
         console.log("Batch size:", args.batchSize)
@@ -58,7 +62,7 @@ export class MyModel {
                     epoch++;
                     args.callbacks.onEpochEnd(epoch, {val_acc: 1, loss: 0})
                 }
-                if (epoch + 1  >= args.epochs) {
+                if (epoch + 1 >= args.epochs) {
                     resolve();
                     return;
                 }
@@ -74,6 +78,7 @@ export class MyModel {
                 args.callbacks.onBatchEnd(i, {loss: getAvg(losses) * 100, val_acc: 1})
                 requestAnimationFrame(step)
             };
+            // using requestAnimationFrame instead of for looping to avoid blocking the UI thread
             requestAnimationFrame(step)
         });
     }
@@ -135,12 +140,12 @@ export class MyModel {
 /**
  * Get my wrapped model.
  * @param modelType
- * @returns {MyModel}
+ * @returns {ModelWrapper}
  */
 export function getModel(modelType) {
     let model = createModel(modelType)
     if (model instanceof TrainableNeuralNetwork) {
-        return new MyModel(model);
+        return new ModelWrapper(model);
     }
     // Now that we've defined our model, we will define our optimizer. The
     // optimizer will be used to optimize our model's weight values during
@@ -168,7 +173,7 @@ export function getModel(modelType) {
         loss: 'categoricalCrossentropy',
         metrics: ['accuracy'],
     });
-    return new MyModel(model);
+    return new ModelWrapper(model);
 }
 
 
@@ -296,7 +301,7 @@ function createDenseModel() {
 }
 
 /**
- * The MNIST data is stored as a single array of pixel values.
+ * The MNIST data is stored all images as a single array of pixel values[0,255, ...].
  * This function reshapes these into a 784 pixel values (28 * 28)
  * @param xs inputs
  * @param ys labels
