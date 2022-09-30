@@ -24,7 +24,7 @@ export class Matrix {
     /**
      * Applies matrix multiplication to each element of the matrix(Dot product)
      *
-     * @param {Matrix} n
+     * @param {Matrix | number} n
      * @returns {Matrix}
      */
     multiply(n) {
@@ -39,7 +39,7 @@ export class Matrix {
      * Applies matrix multiplication to each element of the matrix
      * (matrix,matrix) or (matrix,scalar)
      * @param {Matrix} matrix1
-     * @param {Matrix} matrix2
+     * @param {Matrix | number} matrix2
      * @returns {Matrix}
      */
     static multiply(matrix1, matrix2) {

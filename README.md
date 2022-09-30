@@ -20,3 +20,20 @@ run `yarn install` to install all the dependencies.
 
 run `yarn watch` to start the development server
 
+## Implementing a Backpropagation algorithm from scratch
+In this repository, you will learn how to implement the backpropagation algorithm from scratch using Javascript.
+
+What is Backpropagation? Back-propagation is the essence of neural net training. 
+It is the method of fine-tuning the weights of a neural net based on the error rate obtained in the previous epoch 
+(i.e., iteration). Proper tuning of the weights allows you to reduce error rates and to make the model reliable by increasing its generalization.
+
+Backpropagation is a short form for "backward propagation of errors." It is a standard method of training artificial neural 
+networks. This method helps to calculate the gradient of a loss function with respects to all the weights in the network.
+
+The backpropagation algorithm consists of two phases:
+
+* The forward pass where we pass our inputs through the network to obtain our output classifications.
+* The backward pass (i.e., weight update phase) where we compute the gradient of the loss function and use this information to iteratively apply 
+the chain rule to update the weights in our network.
+
+<img src="https://camo.githubusercontent.com/97ba6d4d96e26e783e836e035828b17ab314488b5983a9b94a58856c4d050c13/68747470733a2f2f7777772e6775727539392e636f6d2f696d616765732f312f3033303831395f303933375f4261636b50726f70616761312e706e67">

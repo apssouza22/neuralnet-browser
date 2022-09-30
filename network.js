@@ -20,9 +20,9 @@ class NeuralNetwork {
             if (layer.layerType == Layer.INPUT) {
                 continue;
             }
-            this.layerNodesCounts.push(layer.inputs.length);
+            this.layerNodesCounts.push(layer.weights.cols);
             if (layer.layerType == Layer.OUTPUT) {
-                this.layerNodesCounts.push(layer.outputs.length);
+                this.layerNodesCounts.push(layer.weights.rows);
             }
         }
     }
@@ -38,7 +38,7 @@ class NeuralNetwork {
         let inputMat = Matrix.fromArray(input_array)
         let outputs = [];
         for (let i = 0; i < this.layerNodesCounts.length; i++) {
-            outputs[i] = this.layers[i].feedForward(inputMat);
+            outputs[i] = this.layers[i].processFeedForward(inputMat);
             inputMat = outputs[i];
         }
 
@@ -246,8 +246,19 @@ export class Layer {
     static INPUT = 1
     static HIDDEN = 2
     static OUTPUT = 3
+    /**
+     * @type {Matrix}
+     */
     layerError
+    /**
+     * @type {Matrix}
+     */
+    weights
 
+    /**
+     * @type {Matrix}
+     */
+    outputs
     /**
      * Constructor
      * @param {int} inputSize
@@ -261,28 +272,33 @@ export class Layer {
         this.weights = Matrix.randomize(outputSize, inputSize);
         this.biases = Matrix.randomize(outputSize, 1);
         this.inputs = new Array(inputSize);
-        this.outputs = new Array(outputSize);
     }
 
     /**
      * Feed forward the input matrix to the layer
-     * @param {number[]} input_array - Array of input values
-     * @param {Boolean} GET_ALL_LAYERS - if we need all layers after feed forward instead of just output layer
+     * @param {Matrix} input_array - Array of input values
+     * @returns {Matrix} - Array of output values
      */
-    feedForward(input) {
+    processFeedForward(input) {
         if (this.layerType == Layer.INPUT) {
             this.inputs = input.data;
             this.outputs = input;
             return input;
         }
         this.inputs = input.data
-        input = Matrix.multiply(this.weights, input);
-        input.add(this.biases);
-        input.map(this.activationFun.activation);
-        this.outputs = input
-        return input
+        let output = Matrix.multiply(this.weights, input);
+        output.add(this.biases);
+        output.map(this.activationFun.activation);
+        this.outputs = output
+        return output
     }
 
+    /**
+     * Calculate the loss for the layer using the MSE loss function
+     * @param target_matrix
+     * @param prevLayer
+     * @return {*}
+     */
     calculateErrorLoss(target_matrix, prevLayer) {
         if (this.layerType == Layer.OUTPUT) {
             this.layerError = Matrix.add(target_matrix, Matrix.multiply(this.outputs, -1));
@@ -318,7 +334,12 @@ export class Layer {
     }
 }
 
-
+/**
+ * Return the index of the highest value in the array
+ * (e.g. argmax([0.07, 0.1, 0.03, 0.75, 0.05]) == 3)
+ * @param arr
+ * @return {number}
+ */
 export function argMax(arr) {
     return arr.indexOf(Math.max(...arr));
 }

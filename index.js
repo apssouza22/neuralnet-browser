@@ -100,8 +100,7 @@ async function train(model, onIteration) {
 
 
   const testAccPercent = model.evaluate(testData.xs, testData.labels);
-  ui.logStatus(
-      `Final test accuracy: ${testAccPercent.toFixed(1)}%`
+  ui.logStatus(`Final test accuracy: ${testAccPercent.toFixed(1)}%`
   );
 }
 
