@@ -1,4 +1,4 @@
-# Training MNIST on the Browser
+# Vanilla Neural Network on the browser with Javascript
 
 This project shows how to train a neural network on the browser using Vanilla Neural Network(No library) 
 then we compare its performance with a neural network trained using Tensorflow.js.
@@ -12,6 +12,7 @@ This project lets you train a handwritten digit recognizer using three different
 
 Note: currently the entire dataset of MNIST images is stored in a PNG image
 
+**If want to learn more about Deep learning and Neural Networks, I recommend you to check out my [Free Deep Learning Course](https://www.udemy.com/course/convolutional-neural-net-cnn-for-developers/)**
 
 ![Alt text](predictions.png?raw=true "inference digits")
 

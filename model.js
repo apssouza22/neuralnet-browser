@@ -11,6 +11,60 @@ function getAvg(losses) {
             .reduce((a, b) => a + b) / losses.length;
 }
 
+/**
+ * Get my wrapped model.
+ * @param modelType
+ * @returns {ModelWrapper}
+ */
+export function getModel(modelType) {
+    let model = createModel(modelType)
+    if (model instanceof TrainableNeuralNetwork) {
+        return new ModelWrapper(model);
+    }
+    // Now that we've defined our model, we will define our optimizer. The
+    // optimizer will be used to optimize our model's weight values during
+    // training so that we can decrease our training loss and increase our
+    // classification accuracy.
+
+    // We are using rmsprop as our optimizer.
+    // An optimizer is an iterative method for minimizing an loss function.
+    // It tries to find the minimum of our loss function with respect to the
+    // model's weight parameters.
+    const optimizer = 'rmsprop';
+
+    // We compile our model by specifying an optimizer, a loss function, and a
+    // list of metrics that we will use for model evaluation. Here we're using a
+    // categorical crossentropy loss, the standard choice for a multi-class
+    // classification problem like MNIST digits.
+    // The categorical crossentropy loss is differentiable and hence makes
+    // model training possible. But it is not amenable to easy interpretation
+    // by a human. This is why we include a "metric", namely accuracy, which is
+    // simply a measure of how many of the examples are classified correctly.
+    // This metric is not differentiable and hence cannot be used as the loss
+    // function of the model.
+    model.compile({
+        optimizer,
+        loss: 'categoricalCrossentropy',
+        metrics: ['accuracy'],
+    });
+    return new ModelWrapper(model);
+}
+
+
+function createModel(modelType) {
+    if (modelType === 'ConvNet') {
+        return createConvModel();
+    }
+    if (modelType === 'DenseNet') {
+        return createDenseModel();
+    }
+
+    if (modelType === 'MyNet') {
+        return createMyModel();
+    }
+    throw new Error(`Invalid model type: ${modelType}`);
+}
+
 export class ModelWrapper {
     /**
      * @param {tf.Sequential| TrainableNeuralNetwork} tfModel
@@ -137,78 +191,25 @@ export class ModelWrapper {
     }
 }
 
-/**
- * Get my wrapped model.
- * @param modelType
- * @returns {ModelWrapper}
- */
-export function getModel(modelType) {
-    let model = createModel(modelType)
-    if (model instanceof TrainableNeuralNetwork) {
-        return new ModelWrapper(model);
-    }
-    // Now that we've defined our model, we will define our optimizer. The
-    // optimizer will be used to optimize our model's weight values during
-    // training so that we can decrease our training loss and increase our
-    // classification accuracy.
-
-    // We are using rmsprop as our optimizer.
-    // An optimizer is an iterative method for minimizing an loss function.
-    // It tries to find the minimum of our loss function with respect to the
-    // model's weight parameters.
-    const optimizer = 'rmsprop';
-
-    // We compile our model by specifying an optimizer, a loss function, and a
-    // list of metrics that we will use for model evaluation. Here we're using a
-    // categorical crossentropy loss, the standard choice for a multi-class
-    // classification problem like MNIST digits.
-    // The categorical crossentropy loss is differentiable and hence makes
-    // model training possible. But it is not amenable to easy interpretation
-    // by a human. This is why we include a "metric", namely accuracy, which is
-    // simply a measure of how many of the examples are classified correctly.
-    // This metric is not differentiable and hence cannot be used as the loss
-    // function of the model.
-    model.compile({
-        optimizer,
-        loss: 'categoricalCrossentropy',
-        metrics: ['accuracy'],
-    });
-    return new ModelWrapper(model);
-}
-
-
-function createModel(modelType) {
-    if (modelType === 'ConvNet') {
-        return createConvModel();
-    }
-    if (modelType === 'DenseNet') {
-        return createDenseModel();
-    }
-
-    if (modelType === 'MyNet') {
-        return createMyModel();
-    }
-    throw new Error(`Invalid model type: ${modelType}`);
-}
 
 /**
  * Create a vanilla neural network model (My own NN)
  * @returns {TrainableNeuralNetwork}
  */
 function createMyModel() {
-    let input = IMAGE_H * IMAGE_W;
+    let imageSize = IMAGE_H * IMAGE_W;
     /**
      * @type {Layer[]} layers
      */
     let layers = []
     layers.push(new Layer(
-            input,
-            input,
+            imageSize,
+            imageSize,
             Activation.ReLU,
             Layer.INPUT
     ))
     layers.push(new Layer(
-            input,
+            imageSize,
             42,
             Activation.ReLU,
             Layer.HIDDEN
@@ -220,6 +221,27 @@ function createMyModel() {
             Layer.OUTPUT
     ))
     return new TrainableNeuralNetwork(layers);
+}
+
+
+/**
+ * Creates a model consisting of only flatten, dense and dropout layers.
+ *
+ * The model create here has approximately the same number of parameters
+ * (~31k) as the convnet created by `createConvModel()`, but is
+ * expected to show a significantly worse accuracy after training, due to the
+ * fact that it doesn't utilize the spatial information as the convnet does.
+ *
+ * This is for comparison with the convolutional network above.
+ *
+ * @returns {tf.Sequential} An instance of tf.Model.
+ */
+function createDenseModel() {
+    const model = tf.sequential();
+    model.add(tf.layers.flatten({inputShape: [IMAGE_H, IMAGE_W, 1]}));
+    model.add(tf.layers.dense({units: 42, activation: 'relu'}));
+    model.add(tf.layers.dense({units: 10, activation: 'softmax'}));
+    return model;
 }
 
 /**
@@ -280,25 +302,6 @@ function createConvModel() {
 }
 
 
-/**
- * Creates a model consisting of only flatten, dense and dropout layers.
- *
- * The model create here has approximately the same number of parameters
- * (~31k) as the convnet created by `createConvModel()`, but is
- * expected to show a significantly worse accuracy after training, due to the
- * fact that it doesn't utilize the spatial information as the convnet does.
- *
- * This is for comparison with the convolutional network above.
- *
- * @returns {tf.Sequential} An instance of tf.Model.
- */
-function createDenseModel() {
-    const model = tf.sequential();
-    model.add(tf.layers.flatten({inputShape: [IMAGE_H, IMAGE_W, 1]}));
-    model.add(tf.layers.dense({units: 42, activation: 'relu'}));
-    model.add(tf.layers.dense({units: 10, activation: 'softmax'}));
-    return model;
-}
 
 /**
  * The MNIST data is stored all images as a single array of pixel values[0,255, ...].
