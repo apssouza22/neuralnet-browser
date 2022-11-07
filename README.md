@@ -12,14 +12,22 @@ This project lets you train a handwritten digit recognizer using three different
 
 Note: currently the entire dataset of MNIST images is stored in a PNG image
 
-**If want to learn more about Deep learning and Neural Networks, I recommend you to check out my [Free Deep Learning Course](https://www.udemy.com/course/convolutional-neural-net-cnn-for-developers/)**
+**If you want to learn more about Deep learning and Neural Networks, I recommend you to check out my [Free Deep Learning Course](https://www.udemy.com/course/convolutional-neural-net-cnn-for-developers/)**
 
 ![Alt text](predictions.png?raw=true "inference digits")
+
+## Free course
+I have created a free course covering all the component implementation in this project.
+[Deep Learning: Neural Networks in Javascript from scratch](https://www.udemy.com/course/deep-learning-neural-networks-in-javascript-from-scratch/?referralCode=8609C3432BD37D794205).
 
 ## Getting Started
 run `yarn install` to install all the dependencies.
 
 run `yarn watch` to start the development server
+
+
+### If this project helped you, consider leaving a star  and by me a coffee
+<a href="https://www.buymeacoffee.com/apssouza"><img src="https://miro.medium.com/max/654/1*rQv8JgstmK0juxP-Kb4IGg.jpeg"></a>
 
 ## Implementing a Backpropagation algorithm from scratch
 In this repository, you will learn how to implement the backpropagation algorithm from scratch using Javascript.
