@@ -80,7 +80,9 @@ export class TrainableNeuralNetwork extends NeuralNetwork {
      */
     fit(input, target) {
         this.#trainArgsValidator(input, target)
-        this.feedForward(input, true);
+        let pred = this.feedForward(input, true);
+        console.log("Predicted", pred)
+        console.log(target, pred)
         let loss = this.calculateLoss(target);
         this.updateWeights();
         return loss;

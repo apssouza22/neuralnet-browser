@@ -1,5 +1,7 @@
 # Vanilla Neural Network on the browser with Javascript
 
+[Live Demo](https://apssouza22.github.io/neuralnet-browser/live)
+
 This project shows how to train a neural network on the browser using Vanilla Neural Network(No library) 
 then we compare its performance with a neural network trained using Tensorflow.js.
 

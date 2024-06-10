@@ -1,0 +1,141 @@
+<!--
+Copyright 2018 Google LLC. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================
+-->
+
+<html>
+
+<head>
+    <title>MNIST in Vanilla ANN</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="index.3a01df49.css">
+
+    <style>#train {
+  margin-top: 10px;
+}
+
+label {
+  width: 250px;
+  padding: 6px 0;
+  display: inline-block;
+}
+
+.canvases {
+  display: inline-block;
+}
+
+.prediction-canvas {
+  width: 100px;
+}
+
+.pred {
+  width: 100px;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.pred-correct {
+  background-color: #00cf00;
+}
+
+.pred-incorrect {
+  background-color: red;
+}
+
+.pred-container {
+  width: 100px;
+  margin: 10px;
+  display: inline-block;
+}
+
+</style>
+</head>
+
+<body>
+<div class="tfjs-example-container">
+    <section class="title-area">
+        <h1>Digit Recognizer with Vanilla Artificial Neural Network(My own implementation of ANN)</h1>
+        <p class="subtitle">Train a model to recognize handwritten digits from the MNIST database using a vanilla artificial neural network
+            and compare with TensorFlow</p>
+        <p></p>
+    </section>
+
+    <section>
+        <p class="section-head">Description</p>
+        <p>
+            This examples lets you train a handwritten digit recognizer using three different approaches:
+        </p><ul>
+            <li>Vanilla Artificial Neural Network</li>
+            <li>Fully Connected Neural Network (also known as a DenseNet) Using TensorFlow.js</li>
+            <li>Convolutional Neural Network(also known as a ConvNet or CNN) Using TensorFlow.js</li>
+        </ul>
+        <p></p>
+        <p>The MNIST dataset is used as training data.</p>
+    </section>
+
+    <section>
+        <div style="float: left">
+        <p class="section-head">Training Parameters</p>
+        <div>
+            <label>Model Type:</label>
+            <select id="model-type">
+                <option>MyNet</option>
+                <option>DenseNet</option>
+                <option>ConvNet</option>
+            </select>
+        </div>
+
+        <div>
+            <label># of training epochs:</label>
+            <input id="train-epochs" value="3">
+        </div>
+
+        <button id="train">Load Data and Train Model</button>
+        </div>
+        <div style="float: right">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+    </section>
+
+    <section>
+        <p class="section-head">Training Progress</p>
+        <p id="status"></p>
+        <p id="message"></p>
+
+        <div id="stats">
+            <div class="canvases">
+                <label id="loss-label"></label>
+                <div id="loss-canvas"></div>
+            </div>
+            <div class="canvases">
+                <label id="accuracy-label"></label>
+                <div id="accuracy-canvas"></div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <p class="section-head">Inference Examples</p>
+        <div id="images"></div>
+    </section>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="index.3d214d75.js" defer=""></script>
+</body>
+
+</html>
